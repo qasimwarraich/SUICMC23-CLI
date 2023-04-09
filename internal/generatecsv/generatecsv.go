@@ -123,7 +123,7 @@ func HousingCSV(p participants.Participants) {
 }
 
 func VolunteersCSV(v volunteers.Volunteers) {
-	file, err := os.Create("suicmc23-data/volunteers.csv")
+	file, err := os.Create("suicmc23-data/volunteers-suicmc23.csv")
 	if err != nil {
 		log.Fatalln("Couldn't create file", err)
 	}
