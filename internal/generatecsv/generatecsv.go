@@ -10,6 +10,87 @@ import (
 	"suicmc23/internal/volunteers"
 )
 
+func ParticipantsCSV(p participants.Participants) {
+	file, err := os.Create("suicmc23-data/participants-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	row := []string{
+		"first_name",
+		"last_name",
+		"race_number",
+		"nick_name",
+		"pronouns",
+		"email",
+		"team",
+		"city",
+		"rank_selection",
+		"tshirt_size",
+		"cargo_race",
+		"volunteering",
+		"housing",
+		"housing_friday",
+		"housing_saturday",
+		"housing_sunday",
+		"pre_event",
+		"payment_method",
+		"intended_payment",
+		"paid",
+		"nabio",
+		"additional_comments",
+		"id",
+		"created",
+		"updated",
+	}
+	err = w.Write(row)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	var data [][]string
+	for _, v := range p.Items {
+		row := []string{
+			v.FirstName,
+			v.LastName,
+			strconv.Itoa(v.RaceNumber),
+			v.NickName,
+			v.Pronouns,
+			v.Email,
+			v.Team,
+			v.City,
+			v.RankSelection,
+			v.TshirtSize,
+			strconv.FormatBool(v.CargoRace),
+			strconv.FormatBool(v.Volunteering),
+			v.Housing,
+			strconv.FormatBool(v.HousingFriday),
+			strconv.FormatBool(v.HousingSaturday),
+			strconv.FormatBool(v.HousingSunday),
+			strconv.FormatBool(v.PreEvent),
+			v.PaymentMethod,
+			strconv.Itoa(v.IntendedPayment),
+			strconv.FormatBool(v.Paid),
+			strconv.FormatBool(v.Nabio),
+			v.AdditionalComments,
+			v.ID,
+			v.Created,
+			v.Updated,
+		}
+		if err := w.Write(row); err != nil {
+			log.Fatalln("Couldn't write row to file", err)
+		}
+
+		if err := w.WriteAll(data); err != nil {
+			log.Fatalln("Couldn't write rows to file", err)
+		}
+	}
+}
+
 func FinanceCSV(p participants.Participants) {
 	file, err := os.Create("suicmc23-data/finance-suicmc23.csv")
 	if err != nil {

@@ -43,6 +43,12 @@ func main() {
 	volunteers := getVolunteers(token)
 
 	fmt.Println()
+	printer.Print("Generating participants csv file", "theme")
+	generatecsv.ParticipantsCSV(participants)
+
+	printer.Print("Generating volunteers csv file", "theme")
+	generatecsv.VolunteersCSV(volunteers)
+
 	printer.Print("Generating finance csv file", "theme")
 	generatecsv.FinanceCSV(participants)
 
@@ -52,8 +58,6 @@ func main() {
 	printer.Print("Generating housing csv file", "theme")
 	generatecsv.HousingCSV(participants)
 
-	printer.Print("Generating volunteers csv file", "theme")
-	generatecsv.VolunteersCSV(volunteers)
 	fmt.Println()
 
 	printer.Print("Uploading to Dropbox", "tip")
