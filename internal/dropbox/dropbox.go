@@ -27,7 +27,7 @@ func Upload() {
 
 	for _, dataFiles := range dataDir {
 
-		content, err := os.ReadFile("suicmc23-data/volunteers.csv")
+		content, err := os.ReadFile("suicmc23-data/" + dataFiles.Name())
 		if err != nil {
 			log.Fatal(err)
 		}
