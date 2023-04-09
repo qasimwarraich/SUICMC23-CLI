@@ -49,7 +49,10 @@ func main() {
 	printer.Print("Generating pre-event csv file", "theme")
 	generatecsv.PreEventCSV(participants)
 
-	printer.Print("Generating volunteer csv file", "theme")
+	printer.Print("Generating housing csv file", "theme")
+	generatecsv.HousingCSV(participants)
+
+	printer.Print("Generating volunteers csv file", "theme")
 	generatecsv.VolunteersCSV(volunteers)
 	fmt.Println()
 

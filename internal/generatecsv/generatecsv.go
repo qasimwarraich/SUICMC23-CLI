@@ -83,6 +83,45 @@ func PreEventCSV(p participants.Participants) {
 	}
 }
 
+func HousingCSV(p participants.Participants) {
+	file, err := os.Create("suicmc23-data/housing-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	row := []string{"first name", "nick name", "race number", "email", "housing_friday", "housing_saturday", "housing_sunday"}
+	err = w.Write(row)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	var data [][]string
+	for _, v := range p.Items {
+		if v.HousingFriday || v.HousingSaturday || v.HousingSunday {
+			row := []string{
+				v.FirstName,
+				v.NickName,
+				strconv.Itoa(v.RaceNumber),
+				v.Email,
+				strconv.FormatBool(v.HousingFriday),
+				strconv.FormatBool(v.HousingSaturday),
+				strconv.FormatBool(v.HousingSunday),
+			}
+			if err := w.Write(row); err != nil {
+				log.Fatalln("Couldn't write row to file", err)
+			}
+		}
+
+		if err := w.WriteAll(data); err != nil {
+			log.Fatalln("Couldn't write rows to file", err)
+		}
+	}
+}
+
 func VolunteersCSV(v volunteers.Volunteers) {
 	file, err := os.Create("suicmc23-data/volunteers.csv")
 	if err != nil {
