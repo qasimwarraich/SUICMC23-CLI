@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"suicmc23/internal/authentication"
+	"suicmc23/internal/dropbox"
 	"suicmc23/internal/generatecsv"
 	"suicmc23/internal/participants"
 	"suicmc23/internal/printer"
@@ -51,6 +52,9 @@ func main() {
 	printer.Print("Generating volunteer csv file", "theme")
 	generatecsv.VolunteersCSV(volunteers)
 	fmt.Println()
+
+	printer.Print("Uploading to Dropbox", "tip")
+	dropbox.Upload()
 
 	printer.Print("Done!", "guide")
 	printer.Print("Ciao and Chistole 👋", "theme")
