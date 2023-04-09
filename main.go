@@ -87,7 +87,7 @@ func app() (events.APIGatewayProxyResponse, error) {
 		StatusCode:        200,
 		Headers:           map[string]string{"Content-Type": "text/html"},
 		MultiValueHeaders: map[string][]string{},
-		Body:              "Spamming of Data Successful 🤠, Have a nice day.",
+		Body:              "Spamming of Data Successful :), Have a nice day.",
 		IsBase64Encoded:   false,
 	}
 	return response, nil
