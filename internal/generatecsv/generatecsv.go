@@ -20,7 +20,15 @@ func FinanceCSV(p participants.Participants) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
 
-	row := []string{"first name", "nick name", "race number", "email", "intended payment", "payment method", "paid?"}
+	row := []string{
+		"first name",
+		"nick name",
+		"race number",
+		"email",
+		"intended payment",
+		"payment method",
+		"paid?",
+	}
 	err = w.Write(row)
 	if err != nil {
 		log.Fatalln("Couldn't write header to file", err)
@@ -93,7 +101,15 @@ func HousingCSV(p participants.Participants) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
 
-	row := []string{"first name", "nick name", "race number", "email", "housing_friday", "housing_saturday", "housing_sunday"}
+	row := []string{
+		"first name",
+		"nick name",
+		"race number",
+		"email",
+		"housing_friday",
+		"housing_saturday",
+		"housing_sunday",
+	}
 	err = w.Write(row)
 	if err != nil {
 		log.Fatalln("Couldn't write header to file", err)
