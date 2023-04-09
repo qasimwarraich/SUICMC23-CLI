@@ -10,8 +10,18 @@ import (
 	"suicmc23/internal/volunteers"
 )
 
+var path string
+
+func init() {
+	if os.Getenv("AWS_EXECUTION_ENV") != "" {
+		path = "/tmp/suicmc23-data/"
+	} else {
+		path = "suicmc23-data/"
+	}
+}
+
 func ParticipantsCSV(p participants.Participants) {
-	file, err := os.Create("suicmc23-data/participants-suicmc23.csv")
+	file, err := os.Create(path + "participants-suicmc23.csv")
 	if err != nil {
 		log.Fatalln("Couldn't create file", err)
 	}
@@ -92,7 +102,7 @@ func ParticipantsCSV(p participants.Participants) {
 }
 
 func FinanceCSV(p participants.Participants) {
-	file, err := os.Create("suicmc23-data/finance-suicmc23.csv")
+	file, err := os.Create(path + "finance-suicmc23.csv")
 	if err != nil {
 		log.Fatalln("Couldn't create file", err)
 	}
@@ -137,7 +147,7 @@ func FinanceCSV(p participants.Participants) {
 }
 
 func PreEventCSV(p participants.Participants) {
-	file, err := os.Create("suicmc23-data/preevent-suicmc23.csv")
+	file, err := os.Create(path + "preevent-suicmc23.csv")
 	if err != nil {
 		log.Fatalln("Couldn't create file", err)
 	}
@@ -173,7 +183,7 @@ func PreEventCSV(p participants.Participants) {
 }
 
 func HousingCSV(p participants.Participants) {
-	file, err := os.Create("suicmc23-data/housing-suicmc23.csv")
+	file, err := os.Create(path + "housing-suicmc23.csv")
 	if err != nil {
 		log.Fatalln("Couldn't create file", err)
 	}
@@ -220,7 +230,7 @@ func HousingCSV(p participants.Participants) {
 }
 
 func VolunteersCSV(v volunteers.Volunteers) {
-	file, err := os.Create("suicmc23-data/volunteers-suicmc23.csv")
+	file, err := os.Create(path + "volunteers-suicmc23.csv")
 	if err != nil {
 		log.Fatalln("Couldn't create file", err)
 	}

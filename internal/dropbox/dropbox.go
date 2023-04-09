@@ -13,6 +13,15 @@ import (
 
 func Upload() {
 	token := os.Getenv("DBX_TOKEN")
+
+	var path string
+
+	if os.Getenv("AWS_EXECUTION_ENV") != "" {
+		path = "/tmp/suicmc23-data/"
+	} else {
+		path = "suicmc23-data/"
+	}
+
 	config := dropbox.Config{
 		Token:    token,
 		LogLevel: dropbox.LogInfo, // if needed, set the desired logging level. Default is off
@@ -20,14 +29,14 @@ func Upload() {
 
 	filesClient := files.New(config)
 
-	dataDir, err := os.ReadDir("suicmc23-data")
+	dataDir, err := os.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, dataFiles := range dataDir {
 
-		content, err := os.ReadFile("suicmc23-data/" + dataFiles.Name())
+		content, err := os.ReadFile(path + dataFiles.Name())
 		if err != nil {
 			log.Fatal(err)
 		}

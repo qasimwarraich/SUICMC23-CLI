@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/joho/godotenv"
 
 	"suicmc23/internal/authentication"
@@ -18,31 +20,45 @@ import (
 	"suicmc23/internal/volunteers"
 )
 
+var path string
+
 func main() {
+	if os.Getenv("AWS_EXECUTION_ENV") != "" {
+		path = "/tmp/suicmc23-data"
+		lambda.Start(app)
+	} else {
+		path = "suicmc23-data"
+		app()
+	}
+}
+
+func app() (events.APIGatewayProxyResponse, error) {
 	printer.Print("Welcome to SUICMC23 CLI", "theme")
 
 	if err := godotenv.Load(); err != nil {
 		log.Fatalln("Couldn't load .env file", err)
 	}
 
-	printer.Print("Authenticating", "guide")
+	printer.Print("Authenticating...", "guide")
 	token, err := authentication.Authenticate()
 	if err != nil {
 		log.Fatal(err)
 	}
 	printer.Print("Authenticated 🥳!", "guide")
 
-	if err := os.MkdirAll("suicmc23-data", os.ModePerm); err != nil {
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		log.Fatalln("Could not create data directory", err)
 	}
 
 	fmt.Println()
+	printer.Print("Fetching Data", "guide")
 	printer.Print("Getting participant list", "theme")
 	participants := getParticipants(token)
 	printer.Print("Getting volunteer list", "theme")
 	volunteers := getVolunteers(token)
 
 	fmt.Println()
+	printer.Print("Generating CSV Files", "guide")
 	printer.Print("Generating participants csv file", "theme")
 	generatecsv.ParticipantsCSV(participants)
 
@@ -62,9 +78,19 @@ func main() {
 
 	printer.Print("Uploading to Dropbox", "tip")
 	dropbox.Upload()
-
 	printer.Print("Done!", "guide")
+
+	fmt.Println()
 	printer.Print("Ciao and Chistole 👋", "theme")
+
+	response := events.APIGatewayProxyResponse{
+		StatusCode:        200,
+		Headers:           map[string]string{"Content-Type": "text/html"},
+		MultiValueHeaders: map[string][]string{},
+		Body:              "Spamming of Data Successful 🤠, Have a nice day.",
+		IsBase64Encoded:   false,
+	}
+	return response, nil
 }
 
 func getParticipants(token string) participants.Participants {

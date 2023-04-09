@@ -3,13 +3,14 @@ module suicmc23
 go 1.20
 
 require (
+	github.com/aws/aws-lambda-go v1.39.1
+	github.com/dropbox/dropbox-sdk-go-unofficial/v6 v6.0.5
 	github.com/joho/godotenv v1.5.1
 	github.com/muesli/termenv v0.15.1
 )
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
-	github.com/dropbox/dropbox-sdk-go-unofficial/v6 v6.0.5 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
