@@ -24,7 +24,10 @@ func main() {
 		lambda.Start(app)
 	} else {
 		path = "suicmc23-data"
-		app()
+		_, err := app()
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 }
 
