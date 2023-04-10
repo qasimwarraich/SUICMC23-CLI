@@ -1,11 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -14,10 +11,9 @@ import (
 
 	"suicmc23/internal/authentication"
 	"suicmc23/internal/dropbox"
+	"suicmc23/internal/fetchers"
 	"suicmc23/internal/generatecsv"
-	"suicmc23/internal/participants"
 	"suicmc23/internal/printer"
-	"suicmc23/internal/volunteers"
 )
 
 var path string
@@ -53,9 +49,9 @@ func app() (events.APIGatewayProxyResponse, error) {
 	fmt.Println()
 	printer.Print("Fetching Data", "guide")
 	printer.Print("Getting participant list", "theme")
-	participants := getParticipants(token)
+	participants := fetchers.GetParticipants(token)
 	printer.Print("Getting volunteer list", "theme")
-	volunteers := getVolunteers(token)
+	volunteers := fetchers.GetVolunteers(token)
 
 	fmt.Println()
 	printer.Print("Generating CSV Files", "guide")
@@ -91,62 +87,4 @@ func app() (events.APIGatewayProxyResponse, error) {
 		IsBase64Encoded:   false,
 	}
 	return response, nil
-}
-
-func getParticipants(token string) participants.Participants {
-	url := os.Getenv("BACKEND_URL")
-
-	req, err := http.NewRequest("GET", url+"/api/collections/participants/records?perPage=420", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	req.Header.Add("Authorization", token)
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	buf, err := io.ReadAll(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var participants participants.Participants
-	err = json.Unmarshal(buf, &participants)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return participants
-}
-
-func getVolunteers(token string) volunteers.Volunteers {
-	url := os.Getenv("BACKEND_URL")
-
-	req, err := http.NewRequest("GET", url+"/api/collections/volunteers/records?perPage=420", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	req.Header.Add("Authorization", token)
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	buf, err := io.ReadAll(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var volunteers volunteers.Volunteers
-	err = json.Unmarshal(buf, &volunteers)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return volunteers
 }
