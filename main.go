@@ -39,7 +39,7 @@ func app() (events.APIGatewayProxyResponse, error) {
 	}
 
 	printer.Print("Authenticating...", "guide")
-	token, err := authentication.Authenticate()
+	token, err := authentication.AuthenticateBackend()
 	if err != nil {
 		log.Fatal(err)
 	}
