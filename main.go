@@ -73,6 +73,9 @@ func app() (events.APIGatewayProxyResponse, error) {
 	printer.Print("Generating housing csv file", "theme")
 	generatecsv.HousingCSV(participants)
 
+	printer.Print("Generating statistics csv file", "theme")
+	generatecsv.StatisticsCSV(participants)
+
 	fmt.Println()
 
 	printer.Print("Uploading to Dropbox", "tip")

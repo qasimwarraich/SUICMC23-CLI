@@ -289,3 +289,119 @@ func VolunteersCSV(v volunteers.Volunteers) {
 		}
 	}
 }
+
+func StatisticsCSV(p participants.Participants) {
+	file, err := os.Create(path + "statistics-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	totalRegistered := 0
+	totalIntendedPayments := 0
+	totalTWINT := 0
+	totalBankTransfer := 0
+	totalCash := 0
+
+	totalHousing := 0
+	totalVolunteers := 0
+	totalPreEvent := 0
+	totalCargoRace := 0
+	totalNabio := 0
+
+	totalSmallTshirts := 0
+	totalMediumTshirts := 0
+	totalLargeTshirts := 0
+	totalXlargeTshirts := 0
+
+	for _, participant := range p.Items {
+
+		totalRegistered += 1
+		totalIntendedPayments += participant.IntendedPayment
+
+		if participant.PreEvent {
+			totalPreEvent += 1
+		}
+
+		if participant.CargoRace {
+			totalCargoRace += 1
+		}
+
+		if participant.Nabio {
+			totalNabio += 1
+		}
+
+		if participant.Housing == "true" {
+			totalHousing += 1
+		}
+
+		if participant.Volunteering {
+			totalVolunteers += 1
+		}
+
+		switch participant.PaymentMethod {
+		case "TWINT":
+			totalTWINT += 1
+
+		case "Bank Transfer":
+			totalBankTransfer += 1
+
+		case "Cash":
+			totalCash += 1
+		}
+
+		switch participant.TshirtSize {
+		case "s":
+			totalSmallTshirts += 1
+
+		case "m":
+			totalMediumTshirts += 1
+
+		case "l":
+			totalLargeTshirts += 1
+
+		case "xl":
+			totalXlargeTshirts += 1
+		}
+	}
+
+	rows := [][]string{
+		{"Category", "Totals"},
+		{"Total Registered Participants", strconv.Itoa(totalRegistered)},
+		{"", ""},
+		{"FINANCE", ""},
+		{"Total Intended Payments", strconv.Itoa(totalIntendedPayments)},
+		{"Average Intended Payment", strconv.Itoa(totalIntendedPayments / totalRegistered)},
+		{"Total Twint", strconv.Itoa(totalTWINT)},
+		{"Total Bank Transfer", strconv.Itoa(totalBankTransfer)},
+		{"Total Cash", strconv.Itoa(totalCash)},
+		{"", ""},
+		{"MISC", ""},
+		{"Total Housing", strconv.Itoa(totalHousing)},
+		{"Total Volunteers", strconv.Itoa(totalVolunteers)},
+		{"Total PreEvent", strconv.Itoa(totalPreEvent)},
+		{"Total Cargo Race", strconv.Itoa(totalCargoRace)},
+		{"Total Safety", strconv.Itoa(totalNabio)},
+		{"", ""},
+		{"T-SHIRTS", ""},
+		{"Small", strconv.Itoa(totalSmallTshirts)},
+		{"Medium", strconv.Itoa(totalMediumTshirts)},
+		{"Large", strconv.Itoa(totalLargeTshirts)},
+		{"X-Large", strconv.Itoa(totalXlargeTshirts)},
+		{"", ""},
+	}
+
+	var data [][]string
+	for _, row := range rows {
+		if err := w.Write(row); err != nil {
+			log.Fatalln("Couldn't write row to file", err)
+		}
+	}
+
+	if err := w.WriteAll(data); err != nil {
+		log.Fatalln("Couldn't write rows to file", err)
+	}
+}
