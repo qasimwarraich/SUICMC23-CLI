@@ -2,6 +2,7 @@ package generatecsv
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -374,7 +375,7 @@ func StatisticsCSV(p participants.Participants) {
 		{"", ""},
 		{"FINANCE", ""},
 		{"Total Intended Payments", strconv.Itoa(totalIntendedPayments)},
-		{"Average Intended Payment", strconv.Itoa(totalIntendedPayments / totalRegistered)},
+		{"Average Intended Payment", fmt.Sprintf("%.2f", float64(totalIntendedPayments)/float64(totalRegistered))},
 		{"Total Twint", strconv.Itoa(totalTWINT)},
 		{"Total Bank Transfer", strconv.Itoa(totalBankTransfer)},
 		{"Total Cash", strconv.Itoa(totalCash)},
