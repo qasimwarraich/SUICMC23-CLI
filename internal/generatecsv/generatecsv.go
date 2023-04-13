@@ -414,14 +414,9 @@ func StatisticsCSV(p participants.Participants) {
 		{"", ""},
 	}
 
-	var data [][]string
 	for _, row := range rows {
 		if err := w.Write(row); err != nil {
 			log.Fatalln("Couldn't write row to file", err)
 		}
-	}
-
-	if err := w.WriteAll(data); err != nil {
-		log.Fatalln("Couldn't write rows to file", err)
 	}
 }
