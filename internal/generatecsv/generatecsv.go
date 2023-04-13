@@ -308,6 +308,10 @@ func StatisticsCSV(p participants.Participants) {
 	totalCash := 0
 
 	totalHousing := 0
+	totalHousingFriday := 0
+	totalHousingSaturday := 0
+	totalHousingSunday := 0
+
 	totalVolunteers := 0
 	totalPreEvent := 0
 	totalCargoRace := 0
@@ -337,6 +341,16 @@ func StatisticsCSV(p participants.Participants) {
 
 		if participant.Housing == "true" {
 			totalHousing += 1
+
+			if participant.HousingFriday {
+				totalHousingFriday += 1
+			}
+			if participant.HousingSaturday {
+				totalHousingSaturday += 1
+			}
+			if participant.HousingSunday {
+				totalHousingSunday += 1
+			}
 		}
 
 		if participant.Volunteering {
@@ -380,8 +394,13 @@ func StatisticsCSV(p participants.Participants) {
 		{"Total Bank Transfer", strconv.Itoa(totalBankTransfer)},
 		{"Total Cash", strconv.Itoa(totalCash)},
 		{"", ""},
-		{"MISC", ""},
+		{"HOUSING", ""},
 		{"Total Housing", strconv.Itoa(totalHousing)},
+		{"Housing Friday", strconv.Itoa(totalHousingFriday)},
+		{"Housing Saturday", strconv.Itoa(totalHousingSaturday)},
+		{"Housing Sunday", strconv.Itoa(totalHousingSunday)},
+		{"", ""},
+		{"MISC", ""},
 		{"Total Volunteers", strconv.Itoa(totalVolunteers)},
 		{"Total PreEvent", strconv.Itoa(totalPreEvent)},
 		{"Total Cargo Race", strconv.Itoa(totalCargoRace)},
