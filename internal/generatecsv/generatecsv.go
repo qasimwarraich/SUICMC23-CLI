@@ -311,7 +311,7 @@ func UnpaidCSV(p participants.Participants) {
 	}
 
 	for _, v := range p.Items {
-		if !v.Paid && v.PaymentMethod == "Cash" {
+		if !v.Paid && v.PaymentMethod == "TWINT" || v.PaymentMethod == "Bank Transfer" {
 			row := []string{
 				v.FirstName,
 				v.NickName,
