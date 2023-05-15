@@ -11,12 +11,14 @@ type Participants struct {
 		Created            string `json:"created"`
 		Email              string `json:"email"`
 		FirstName          string `json:"first_name"`
+		Heat               string `json:"heat"`
 		Housing            string `json:"housing"`
 		HousingFriday      bool   `json:"housing_friday"`
 		HousingSaturday    bool   `json:"housing_saturday"`
 		HousingSunday      bool   `json:"housing_sunday"`
 		ID                 string `json:"id"`
 		IntendedPayment    int    `json:"intended_payment"`
+		InternalComments   string `json:"internal_comments"`
 		LastName           string `json:"last_name"`
 		Nabio              bool   `json:"nabio"`
 		NickName           string `json:"nick_name"`
