@@ -61,11 +61,26 @@ func app() (events.APIGatewayProxyResponse, error) {
 	printer.Print("Generating participants csv file", "theme")
 	generatecsv.ParticipantsCSV(participants)
 
+	printer.Print("Generating participants email csv file", "theme")
+	generatecsv.EmailListCSV(participants)
+
+	printer.Print("Generating volunteer email csv file", "theme")
+	generatecsv.VolunteerEmailListCSV(volunteers)
+
+	printer.Print("Generating main race csv file", "theme")
+	generatecsv.MainRaceCSV(participants)
+
+	printer.Print("Generating cargo race csv file", "theme")
+	generatecsv.CargoRaceCSV(participants)
+
 	printer.Print("Generating volunteers csv file", "theme")
 	generatecsv.VolunteersCSV(volunteers)
 
 	printer.Print("Generating finance csv file", "theme")
 	generatecsv.FinanceCSV(participants)
+
+	printer.Print("Generating unpaid csv file", "theme")
+	generatecsv.UnpaidCSV(participants)
 
 	printer.Print("Generating pre-event csv file", "theme")
 	generatecsv.PreEventCSV(participants)

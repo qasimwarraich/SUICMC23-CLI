@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 
 	"suicmc23/internal/participants"
@@ -54,6 +55,7 @@ func ParticipantsCSV(p participants.Participants) {
 		"paid",
 		"nabio",
 		"additional_comments",
+		"internal_comments",
 		"id",
 		"created",
 		"updated",
@@ -63,7 +65,6 @@ func ParticipantsCSV(p participants.Participants) {
 		log.Fatalln("Couldn't write header to file", err)
 	}
 
-	var data [][]string
 	for _, v := range p.Items {
 		row := []string{
 			v.FirstName,
@@ -88,6 +89,7 @@ func ParticipantsCSV(p participants.Participants) {
 			strconv.FormatBool(v.Paid),
 			strconv.FormatBool(v.Nabio),
 			v.AdditionalComments,
+			v.InternalComments,
 			v.ID,
 			v.Created,
 			v.Updated,
@@ -96,9 +98,152 @@ func ParticipantsCSV(p participants.Participants) {
 			log.Fatalln("Couldn't write row to file", err)
 		}
 
-		if err := w.WriteAll(data); err != nil {
-			log.Fatalln("Couldn't write rows to file", err)
+	}
+}
+
+func EmailListCSV(p participants.Participants) {
+	file, err := os.Create(path + "email-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	row := []string{
+		"email",
+	}
+	err = w.Write(row)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	for _, v := range p.Items {
+		row := []string{
+			v.Email,
 		}
+		if err := w.Write(row); err != nil {
+			log.Fatalln("Couldn't write row to file", err)
+		}
+
+	}
+}
+
+func VolunteerEmailListCSV(v volunteers.Volunteers) {
+	file, err := os.Create(path + "volunteer-email-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	row := []string{
+		"email",
+	}
+	err = w.Write(row)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	for _, v := range v.Items {
+		row := []string{
+			v.Email,
+		}
+		if err := w.Write(row); err != nil {
+			log.Fatalln("Couldn't write row to file", err)
+		}
+
+	}
+}
+
+func MainRaceCSV(p participants.Participants) {
+	file, err := os.Create(path + "mainrace-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	header := []string{"heat", "race number", "first_name", "points", "time"}
+	err = w.Write(header)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	var heat1 [][]string
+	var heat2 [][]string
+
+	for _, v := range p.Items {
+		if v.Heat == "heat1" && v.RankSelection == "ranked" {
+			row := []string{
+				"HEAT 1",
+				strconv.Itoa(v.RaceNumber),
+				v.FirstName,
+			}
+			heat1 = append(heat1, row)
+		}
+
+		if v.Heat == "heat2" && v.RankSelection == "ranked" {
+			row := []string{
+				"HEAT 2",
+				strconv.Itoa(v.RaceNumber),
+				v.FirstName,
+			}
+			heat2 = append(heat2, row)
+		}
+
+	}
+
+	sortedHeat1 := sortMatrixByIndex(heat1, 1)
+	sortedHeat2 := sortMatrixByIndex(heat2, 1)
+
+	if err := w.WriteAll(sortedHeat1); err != nil {
+		log.Fatalln("Couldn't write rows to file", err)
+	}
+	if err := w.Write([]string{""}); err != nil {
+		log.Fatalln("Couldn't write rows to file", err)
+	}
+	if err := w.WriteAll(sortedHeat2); err != nil {
+		log.Fatalln("Couldn't write rows to file", err)
+	}
+}
+
+func CargoRaceCSV(p participants.Participants) {
+	file, err := os.Create(path + "cargorace-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	header := []string{"heat", "race number", "first_name", "points", "time"}
+	err = w.Write(header)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	var data [][]string
+
+	for _, v := range p.Items {
+		if v.CargoRace {
+			row := []string{
+				"CARGO",
+				strconv.Itoa(v.RaceNumber),
+				v.FirstName,
+			}
+			data = append(data, row)
+		}
+	}
+
+	if err := w.WriteAll(data); err != nil {
+		log.Fatalln("Couldn't write rows to file", err)
 	}
 }
 
@@ -126,7 +271,6 @@ func FinanceCSV(p participants.Participants) {
 		log.Fatalln("Couldn't write header to file", err)
 	}
 
-	var data [][]string
 	for _, v := range p.Items {
 		row := []string{
 			v.FirstName,
@@ -140,9 +284,45 @@ func FinanceCSV(p participants.Participants) {
 		if err := w.Write(row); err != nil {
 			log.Fatalln("Couldn't write row to file", err)
 		}
+	}
+}
 
-		if err := w.WriteAll(data); err != nil {
-			log.Fatalln("Couldn't write rows to file", err)
+func UnpaidCSV(p participants.Participants) {
+	file, err := os.Create(path + "unpaid-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	row := []string{
+		"first name",
+		"nick name",
+		"race number",
+		"payment method",
+		"intended payment",
+		"email",
+	}
+	err = w.Write(row)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	for _, v := range p.Items {
+		if !v.Paid && v.PaymentMethod == "Cash" {
+			row := []string{
+				v.FirstName,
+				v.NickName,
+				strconv.Itoa(v.RaceNumber),
+				v.PaymentMethod,
+				strconv.Itoa(v.IntendedPayment),
+				v.Email,
+			}
+			if err := w.Write(row); err != nil {
+				log.Fatalln("Couldn't write row to file", err)
+			}
 		}
 	}
 }
@@ -163,7 +343,6 @@ func PreEventCSV(p participants.Participants) {
 		log.Fatalln("Couldn't write header to file", err)
 	}
 
-	var data [][]string
 	for _, v := range p.Items {
 		if v.PreEvent {
 			row := []string{
@@ -175,10 +354,6 @@ func PreEventCSV(p participants.Participants) {
 			if err := w.Write(row); err != nil {
 				log.Fatalln("Couldn't write row to file", err)
 			}
-		}
-
-		if err := w.WriteAll(data); err != nil {
-			log.Fatalln("Couldn't write rows to file", err)
 		}
 	}
 }
@@ -207,7 +382,6 @@ func HousingCSV(p participants.Participants) {
 		log.Fatalln("Couldn't write header to file", err)
 	}
 
-	var data [][]string
 	for _, v := range p.Items {
 		if v.HousingFriday || v.HousingSaturday || v.HousingSunday {
 			row := []string{
@@ -222,10 +396,6 @@ func HousingCSV(p participants.Participants) {
 			if err := w.Write(row); err != nil {
 				log.Fatalln("Couldn't write row to file", err)
 			}
-		}
-
-		if err := w.WriteAll(data); err != nil {
-			log.Fatalln("Couldn't write rows to file", err)
 		}
 	}
 }
@@ -262,7 +432,6 @@ func VolunteersCSV(v volunteers.Volunteers) {
 		log.Fatalln("Couldn't write header to file", err)
 	}
 
-	var data [][]string
 	for _, v := range v.Items {
 		row := []string{
 			v.FirstName,
@@ -285,9 +454,6 @@ func VolunteersCSV(v volunteers.Volunteers) {
 			log.Fatalln("Couldn't write row to file", err)
 		}
 
-		if err := w.WriteAll(data); err != nil {
-			log.Fatalln("Couldn't write rows to file", err)
-		}
 	}
 }
 
@@ -419,4 +585,21 @@ func StatisticsCSV(p participants.Participants) {
 			log.Fatalln("Couldn't write row to file", err)
 		}
 	}
+}
+
+func sortMatrixByIndex(s [][]string, index int) [][]string {
+	sort.Slice(s[:], func(i, j int) bool {
+		a, err := strconv.Atoi(s[i][index])
+		if err != nil {
+			log.Fatal(err)
+		}
+		b, err := strconv.Atoi(s[j][index])
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return a < b
+	})
+
+	return s
 }
