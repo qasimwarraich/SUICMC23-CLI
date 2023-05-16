@@ -232,7 +232,7 @@ func CargoRaceCSV(p participants.Participants) {
 	var data [][]string
 
 	for _, v := range p.Items {
-		if v.CargoRace {
+		if v.CargoRace && v.RankSelection != "unranked" {
 			row := []string{
 				"CARGO",
 				strconv.Itoa(v.RaceNumber),
@@ -242,7 +242,9 @@ func CargoRaceCSV(p participants.Participants) {
 		}
 	}
 
-	if err := w.WriteAll(data); err != nil {
+	sortedSlice := sortMatrixByIndex(data, 1)
+
+	if err := w.WriteAll(sortedSlice); err != nil {
 		log.Fatalln("Couldn't write rows to file", err)
 	}
 }
@@ -319,6 +321,42 @@ func UnpaidCSV(p participants.Participants) {
 				v.PaymentMethod,
 				strconv.Itoa(v.IntendedPayment),
 				v.Email,
+			}
+			if err := w.Write(row); err != nil {
+				log.Fatalln("Couldn't write row to file", err)
+			}
+		}
+	}
+}
+
+func UnrankedCSV(p participants.Participants) {
+	file, err := os.Create(path + "unranked-suicmc23.csv")
+	if err != nil {
+		log.Fatalln("Couldn't create file", err)
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	row := []string{
+		"first name",
+		"nick name",
+		"race number",
+		"rank_selection",
+	}
+	err = w.Write(row)
+	if err != nil {
+		log.Fatalln("Couldn't write header to file", err)
+	}
+
+	for _, v := range p.Items {
+		if v.RankSelection != "ranked" {
+			row := []string{
+				v.FirstName,
+				v.NickName,
+				strconv.Itoa(v.RaceNumber),
+				v.RankSelection,
 			}
 			if err := w.Write(row); err != nil {
 				log.Fatalln("Couldn't write row to file", err)

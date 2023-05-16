@@ -61,6 +61,9 @@ func app() (events.APIGatewayProxyResponse, error) {
 	printer.Print("Generating participants csv file", "theme")
 	generatecsv.ParticipantsCSV(participants)
 
+	printer.Print("Generating unranked participants csv file", "theme")
+	generatecsv.UnrankedCSV(participants)
+
 	printer.Print("Generating participants email csv file", "theme")
 	generatecsv.EmailListCSV(participants)
 
