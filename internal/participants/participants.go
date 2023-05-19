@@ -3,6 +3,8 @@ package participants
 type Participants struct {
 	Items []struct {
 		AdditionalComments string `json:"additional_comments"`
+		Age                string `json:"age"`
+		Bike               string `json:"bike"`
 		CargoRace          bool   `json:"cargo_race"`
 		Category           string `json:"category"`
 		City               string `json:"city"`
@@ -11,6 +13,7 @@ type Participants struct {
 		Created            string `json:"created"`
 		Email              string `json:"email"`
 		FirstName          string `json:"first_name"`
+		Gears              string `json:"gears"`
 		Heat               string `json:"heat"`
 		Housing            string `json:"housing"`
 		HousingFriday      bool   `json:"housing_friday"`
