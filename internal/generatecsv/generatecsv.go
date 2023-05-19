@@ -169,7 +169,7 @@ func MainRaceCSV(p participants.Participants) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
 
-	header := []string{"heat", "race number", "first_name", "points", "time"}
+	header := []string{"heat", "race_number", "first_name", "rank_selection", "pronouns", "city", "team", "bike", "gears", "age", "points", "time"}
 	err = w.Write(header)
 	if err != nil {
 		log.Fatalln("Couldn't write header to file", err)
@@ -179,20 +179,35 @@ func MainRaceCSV(p participants.Participants) {
 	var heat2 [][]string
 
 	for _, v := range p.Items {
-		if v.Heat == "heat1" && v.RankSelection == "ranked" {
+
+		if v.Heat == "heat1" {
 			row := []string{
 				"HEAT 1",
 				strconv.Itoa(v.RaceNumber),
 				v.FirstName,
+				v.RankSelection,
+				v.Pronouns,
+				v.City,
+				v.Team,
+				v.Bike,
+				v.Gears,
+				v.Age,
 			}
 			heat1 = append(heat1, row)
 		}
 
-		if v.Heat == "heat2" && v.RankSelection == "ranked" {
+		if v.Heat == "heat2" {
 			row := []string{
 				"HEAT 2",
 				strconv.Itoa(v.RaceNumber),
 				v.FirstName,
+				v.RankSelection,
+				v.Pronouns,
+				v.City,
+				v.Team,
+				v.Bike,
+				v.Gears,
+				v.Age,
 			}
 			heat2 = append(heat2, row)
 		}
@@ -223,7 +238,7 @@ func CargoRaceCSV(p participants.Participants) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
 
-	header := []string{"heat", "race number", "first_name", "points", "time"}
+	header := []string{"heat", "race number", "first_name", "rank_selection", "points", "time"}
 	err = w.Write(header)
 	if err != nil {
 		log.Fatalln("Couldn't write header to file", err)
@@ -232,11 +247,12 @@ func CargoRaceCSV(p participants.Participants) {
 	var data [][]string
 
 	for _, v := range p.Items {
-		if v.CargoRace && v.RankSelection != "unranked" {
+		if v.CargoRace {
 			row := []string{
 				"CARGO",
 				strconv.Itoa(v.RaceNumber),
 				v.FirstName,
+				v.RankSelection,
 			}
 			data = append(data, row)
 		}
