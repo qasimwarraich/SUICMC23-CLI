@@ -238,7 +238,7 @@ func CargoRaceCSV(p participants.Participants) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
 
-	header := []string{"heat", "race number", "first_name", "rank_selection", "points", "time"}
+	header := []string{"heat", "race number", "first_name", "rank_selection", "pronouns", "city", "team", "bike", "gears", "age", "points", "time"}
 	err = w.Write(header)
 	if err != nil {
 		log.Fatalln("Couldn't write header to file", err)
@@ -253,6 +253,12 @@ func CargoRaceCSV(p participants.Participants) {
 				strconv.Itoa(v.RaceNumber),
 				v.FirstName,
 				v.RankSelection,
+				v.Pronouns,
+				v.City,
+				v.Team,
+				v.Bike,
+				v.Gears,
+				v.Age,
 			}
 			data = append(data, row)
 		}
